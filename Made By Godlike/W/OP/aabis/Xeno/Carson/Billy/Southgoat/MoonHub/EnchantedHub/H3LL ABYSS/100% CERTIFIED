@@ -34,18 +34,150 @@ local Window = Rayfield:CreateWindow({
 })
 
 
-local TabMain = Window:CreateTab("Main", "amphora")
-local TabSpeedandSize = Window:CreateTab("Speed and Size", "bird")
-local TabAntiShi = Window:CreateTab("Anti Shi", "citrus")
-local TabBoosters = Window:CreateTab("Boosters", "cpu")
-local TabAutoWeight = Window:CreateTab("Auto Weights", "dumbbell")
-local TabAutoRebirth = Window:CreateTab("Auto Rebirth", "crown")
-local TabAutoKill = Window:CreateTab("Auto Kill", "axe")
-local TabAutoRock = Window:CreateTab("Auto Rock Normal", "gem")
-local TabAutoRockFast = Window:CreateTab("Fast Glitch", "haze")
-local TabOPtools = Window:CreateTab("OP TOOLS!!", "dna")
-local TabMisc = Window:CreateTab("Misc V1", "settings")
-local TabMiscV2 = Window:CreateTab("Misc V2", "dog")
-local TabLinkedScripts = Window:CreateTab("Linked Scripts", "file")
-local TabDiscord = Window:CreateTab("Cool Discord Servers", "fingerprint")
-local TabCredits = Window:CreateTab("Credits", "flame")
+local TabMain = Window:CreateTab("Main", "0")
+local TabSpeedandSize = Window:CreateTab("Speed and Size", "0")
+local TabAntiShi = Window:CreateTab("Anti Shi", "0")
+local TabBoosters = Window:CreateTab("Boosters", "0")
+local TabAutoWeight = Window:CreateTab("Auto Weights", "0")
+local TabAutoRebirth = Window:CreateTab("Auto Rebirth", "0")
+local TabAutoKill = Window:CreateTab("Auto Kill", "0")
+local TabAutoRock = Window:CreateTab("Auto Rock Normal", "0")
+local TabAutoRockFast = Window:CreateTab("Fast Glitch", "0")
+local TabOPtools = Window:CreateTab("OP TOOLS!!", "0")
+local TabMisc = Window:CreateTab("Misc V1", "0")
+local TabMiscV2 = Window:CreateTab("Misc V2", "0")
+local TabLinkedScripts = Window:CreateTab("Linked Scripts", "0")
+local TabDiscord = Window:CreateTab("Cool Discord Servers", "0")
+local TabCredits = Window:CreateTab("Credits", "0")
+
+
+
+local Button = TabMain:CreateButton({ -- Changed Tab.Main to TabMain
+   Name = "Fast Tools",
+   Callback = function()
+      local Value = not _G.FastTools -- Define Value and toggle the state
+      _G.FastTools = Value
+      local defaultSpeeds = {
+         {
+            "Punch",
+            "attackTime",
+            Value and 0 or 0.35
+         },
+         {
+            "Ground Slam",
+            "attackTime",
+            Value and 0 or 6
+         },
+         {
+            "Stomp",
+            "attackTime",
+            Value and 0 or 7
+         },
+         {
+            "Handstands",
+            "repTime",
+            Value and 0 or 1
+         },
+         {
+            "Pushups",
+            "repTime",
+            Value and 0 or 1
+         },
+         {
+            "Weight",
+            "repTime",
+            Value and 0 or 1
+         },
+         {
+            "Situps",
+            "repTime",
+            Value and 0 or 1
+         }
+      }
+      local player = game.Players.LocalPlayer
+      local backpack = player:WaitForChild("Backpack")
+      for _, toolInfo in ipairs(defaultSpeeds) do
+         local tool = backpack:FindFirstChild(toolInfo[1])
+         if tool and tool:FindFirstChild(toolInfo[2]) then
+            tool[toolInfo[2]].Value = toolInfo[3]
+         end
+         local equippedTool = player.Character and player.Character:FindFirstChild(toolInfo[1])
+         if equippedTool and equippedTool:FindFirstChild(toolInfo[2]) then
+            equippedTool[toolInfo[2]].Value = toolInfo[3]
+         end
+      end
+   end
+})
+
+local Button = TabMain:CreateButton({ -- Changed Tab.Main to TabMain
+   Name = "Free AutoLift Pass",
+   Callback = function()
+      local gamepassFolder = game:GetService("ReplicatedStorage").gamepassIds
+      local player = game:GetService("Players").LocalPlayer
+      for _, gamepass in pairs(gamepassFolder:GetChildren()) do
+         local value = Instance.new("IntValue")
+         value.Name = gamepass.Name
+         value.Value = gamepass.Value
+         value.Parent = player.ownedGamepasses
+      end
+   end
+}) -- Removed the extra 'end,' and ')'
+
+local Toggle = TabMain:CreateToggle({ -- Changed Tab.Main to TabMain
+   Name = "Walk On Water",
+   CurrentValue = false,
+   Flag = "WalkOnWater", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+      if Value then
+         -- Assuming createParts and makePartsWalkthrough are defined elsewhere
+         -- You need to define these functions or replace them with the actual logic
+         -- For example:
+         -- local function createParts() print("Creating parts for walking on water") end
+         -- local function makePartsWalkthrough() print("Making parts walkthrough") end
+         -- createParts() -- This line seems out of place inside the 'if Value then' block based on the original structure.
+         -- It should likely be part of the 'if Value then' or 'else' block depending on what it does.
+         -- Assuming createParts makes the parts that you walk on when the toggle is ON
+         -- and makePartsWalkthrough makes them not solid when the toggle is OFF.
+         -- You need to implement the actual logic for these functions.
+         print("Walk On Water Enabled") -- Placeholder
+      else
+         -- Assuming makePartsWalkthrough is defined elsewhere
+         print("Walk On Water Disabled") -- Placeholder
+      end
+   end
+})
+
+local Toggle = TabMain:CreateToggle({ -- Changed Tab.Main to TabMain
+   Name = "Lock Position",
+   CurrentValue = false,
+   Flag = "LockPosition", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+      if Value then
+         local currentPos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+         getgenv().posLock = game:GetService("RunService").Heartbeat:Connect(function()
+            if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+               game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = currentPos
+            end
+         end)
+      else
+         if getgenv().posLock then
+            getgenv().posLock:Disconnect()
+         end
+      end
+   end
+})
+
+local Toggle = TabMain:CreateToggle({ -- Changed Tab.Main to TabMain
+   Name = "Day Changer",
+   CurrentValue = false,
+   Flag = "DayChanger", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+      if Value then
+         -- If the toggle is turned on, set the time to midnight
+         game.Lighting.TimeOfDay = "00:00:00" -- Midnight
+      else
+         -- If the toggle is turned off, set the time to daytime (e.g., 12:00:00)
+         game.Lighting.TimeOfDay = "12:00:00" -- Noon or any desired daytime value
+      end
+   end
+})
