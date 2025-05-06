@@ -5,3 +5,22 @@ local window = library:AddWindow("MoonHub-Elerium-Paid", {
     min_size = Vector2.new(470, 470), -- Size of the GUI
     can_resize = false,
 })
+
+local Main = window:AddTab("Main")
+local Size/Speed = window:AddTab("Size/Speed")
+local Boosters = window:AddTab("Auto Boosters")
+local antiafk = window:AddTab("Anti Shi")
+local ML Servers = window:AddTab("ML Servers")
+local AutoWeight = window:AddTab("Auto Weight")
+local Machines = window:AddTab("Auto Machines")
+local autokill = window:AddTab("Auto Kill")
+local AutoRebirth = window:AddTab("Auto Rebirth")
+local OPtools = window:AddTab("OP TOOLS!!")
+local Misc = window:AddTab("Misc")
+local RebirthAdvice = window:AddTab("Advice for Noobs")
+local Rebirth+ = window:AddTab("Rebirth +")
+local LinkedScripts = window:AddTab("Linked Scripts")
+local Credits = window:AddTab("Credits")
+local Servers = window:AddTab("Discord Servers")
+
+
