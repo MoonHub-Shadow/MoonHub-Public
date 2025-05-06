@@ -17,7 +17,7 @@ local Window = Rayfield:CreateWindow({
 
    Discord = {
       Enabled = true, -- Prompt the user to join your Discord server if their executor supports it
-      Invite = "https://discord.gg/P5FxvP3p5X", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+      Invite = "P5FxvP3p5X", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
       RememberJoins = true -- Set this to false to make them join the discord every time they load it up
    },
 
@@ -45,7 +45,7 @@ local TabAutoRock = Window:CreateTab("Auto Rock Normal", "gem")
 local TabAutoRockFast = Window:CreateTab("Fast Glitch", "haze")
 local TabOPtools = Window:CreateTab("OP TOOLS!!", "dna")
 local TabMisc = Window:CreateTab("Misc V1", "settings")
-local TabMisc V2 = Window:CreateTab("Misc V2", "dog")
+local TabMiscV2 = Window:CreateTab("Misc V2", "dog")
 local TabLinkedScripts = Window:CreateTab("Linked Scripts", "file")
 local TabDiscord = Window:CreateTab("Cool Discord Servers", "fingerprint")
 local TabCredits = Window:CreateTab("Credits", "flame")
