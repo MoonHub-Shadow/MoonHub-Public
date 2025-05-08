@@ -45,6 +45,11 @@ local TabLinkedScripts = Window:CreateTab("Linked Scripts", "rewind")
 local TabDiscord = Window:CreateTab("Cool Discord Servers", "rewind")
 local TabCredits = Window:CreateTab("Credits", "rewind")
 
+-- Initialize global flags
+_G.AutoSize = false
+_G.AutoSpeed = false
+_G.FastTools = false
+
 -- ==========================
 -- Fast Tools Button
 local fastToolsButton = TabMain:CreateButton({
@@ -77,17 +82,18 @@ local fastToolsButton = TabMain:CreateButton({
 })
 
 -- ==========================
--- Free AutoLift Pass Button
+-- AutoLift Pass Button
 local autoLiftButton = TabMain:CreateButton({
     Name = "Free AutoLift Pass",
     Callback = function()
         local gamepassFolder = game:GetService("ReplicatedStorage").gamepassIds
         local player = game:GetService("Players").LocalPlayer
+        local ownedPasses = player:FindFirstChild("ownedGamepasses") or player:WaitForChild("PlayerGui") -- fallback
         for _, gamepass in pairs(gamepassFolder:GetChildren()) do
             local value = Instance.new("IntValue")
             value.Name = gamepass.Name
             value.Value = gamepass.Value
-            value.Parent = player:FindFirstChild("ownedGamepasses") or player:WaitForChild("PlayerGui") -- ensure parent exists
+            value.Parent = ownedPasses
         end
     end
 })
@@ -100,14 +106,13 @@ local walkOnWaterToggle = TabMain:CreateToggle({
     Flag = "WalkOnWater",
     Callback = function(Value)
         if Value then
-            -- Placeholder for createParts and makePartsWalkthrough functions
+            -- Placeholder: define createParts() and makePartsWalkthrough() functions elsewhere
             print("Walk On Water Enabled")
-            -- You should define createParts() and makePartsWalkthrough() elsewhere
             -- createParts()
             -- makePartsWalkthrough()
         else
             print("Walk On Water Disabled")
-            -- Implement logic to revert changes if needed
+            -- revert changes if needed
         end
     end
 })
@@ -120,12 +125,16 @@ local lockPositionToggle = TabMain:CreateToggle({
     Flag = "LockPosition",
     Callback = function(Value)
         if Value then
-            local currentPos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-            getgenv().posLock = game:GetService("RunService").Heartbeat:Connect(function()
-                if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = currentPos
-                end
-            end)
+            local player = game.Players.LocalPlayer
+            local hrp = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+            if hrp then
+                local currentPos = hrp.CFrame
+                getgenv().posLock = game:GetService("RunService").Heartbeat:Connect(function()
+                    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+                        player.Character.HumanoidRootPart.CFrame = currentPos
+                    end
+                end)
+            end
         else
             if getgenv().posLock then
                 getgenv().posLock:Disconnect()
@@ -141,10 +150,12 @@ local dayChangerToggle = TabMain:CreateToggle({
     CurrentValue = false,
     Flag = "DayChanger",
     Callback = function(Value)
-        if Value then
-            game.Lighting.TimeOfDay = "00:00:00" -- Midnight
-        else
-            game.Lighting.TimeOfDay = "12:00:00" -- Daytime
+        if game.Lighting then
+            if Value then
+                game.Lighting.TimeOfDay = "00:00:00" -- Midnight
+            else
+                game.Lighting.TimeOfDay = "12:00:00" -- Daytime
+            end
         end
     end
 })
@@ -173,11 +184,13 @@ local autoSizeToggle = TabSpeedandSize:CreateToggle({
     Flag = "AutoChangeSize",
     Callback = function(Value)
         _G.AutoSize = Value
-        while _G.AutoSize do
-            game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
-            task.wait(0.1)
-            if not _G.AutoSize then break end
-        end
+        spawn(function()
+            while _G.AutoSize do
+                game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
+                task.wait(0.1)
+                if not _G.AutoSize then break end
+            end
+        end)
     end
 })
 
@@ -207,30 +220,35 @@ local autoSpeedToggle = TabSpeedandSize:CreateToggle({
     Flag = "AutoSetSpeed",
     Callback = function(Value)
         _G.AutoSpeed = Value
-        while _G.AutoSpeed do
-            local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
-            if humanoid then
-                humanoid.WalkSpeed = tonumber(selectedSpeed)
+        spawn(function()
+            while _G.AutoSpeed do
+                local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+                if humanoid then
+                    humanoid.WalkSpeed = tonumber(selectedSpeed)
+                end
+                task.wait(0.1)
+                if not _G.AutoSpeed then break end
             end
-            task.wait()
-            if not _G.AutoSpeed then break end
-        end
+        end)
     end
 })
 
-local Toggle = Tab.SpeedAndSize:CreateToggle({
+-- ==========================
+-- Auto Size Nan | Tiny Toggle
+local Toggle = TabSpeedandSize:CreateToggle({
    Name = "Auto Size Nan | Tiny",
    CurrentValue = false,
-   Flag = "Nan", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Flag = "Nan",
    Callback = function(Value)
-      -- Set the toggle variable to control the loop
-_G.AutoSize = Value  -- Make sure 'Value' is defined elsewhere in your script
-
-if _G.AutoSize then
-    while _G.AutoSize do
-        game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer(
-            "changeSize",
-            -9223372036854776000
-        )
-        task.wait(0.1)
-    end
+      _G.AutoSize = Value
+      spawn(function()
+          while _G.AutoSize do
+              game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer(
+                  "changeSize",
+                  -9223372036854776000 -- Very small size
+              )
+              task.wait(0.1)
+          end
+      end)
+   end
+})
