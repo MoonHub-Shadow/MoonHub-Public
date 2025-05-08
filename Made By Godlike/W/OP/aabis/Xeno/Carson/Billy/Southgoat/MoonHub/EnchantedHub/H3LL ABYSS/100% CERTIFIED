@@ -234,36 +234,83 @@ local autoSpeedToggle = TabSpeedandSize:CreateToggle({
 })
 
 -- ==========================
-local Button = TabAntiShi:CreateButton({
+local ButtonAFK = TabAntiShi:CreateButton({
    Name = "Anti AFK",
    Callback = function()
       loadstring(game:HttpGet("https://raw.githubusercontent.com/evxncodes/mainroblox/main/anti-afk", true))()
    end,
 })
 
-local Button = TabAntiShi:CreateButton({
-Name = "Anti Lag", 
-Callback = function()
-   for _, v in pairs(game:GetDescendants()) do
-
+local ButtonLag = TabAntiShi:CreateButton({
+   Name = "Anti Lag", 
+   Callback = function()
+      for _, v in pairs(game:GetDescendants()) do
         if v:IsA("ParticleEmitter") or v:IsA("Effect") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Explosion") then
-
             v:Destroy()
-
         elseif v:IsA("Decal") or v:IsA("Texture") then
-
             v:Destroy()
-
         end
-
-    end
-
-end
+      end
+   end,
 })
 
+local ButtonMOHA = TabAntiShi:CreateButton({
+   Name = "MOHA Anti AFK | Anti Lag",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/LEGENDOX-BYMOHA/ML/refs/heads/main/anti%20lag%2Ckick%2Cafk%20.txt"))()
+   end,
+})
 
-local Button = TabAntiShi:CreateButton({
-Name = "MOHA Anti Afk | Anti Lag",
-Callback = function()
-   loadstring(game:HttpGet("https://raw.githubusercontent.com/LEGENDOX-BYMOHA/ML/refs/heads/main/anti%20lag%2Ckick%2Cafk%20.txt"))()
+local ButtonUltraLag = TabAntiShi:CreateButton({
+   Name = "ULTRA | ANTI LAG + AFK",
+   Callback = function()
+       -- Load anti-AFK script
+       loadstring(game:HttpGet("https://raw.githubusercontent.com/evxncodes/mainroblox/main/anti-afk", true))()
+       
+       -- Disable visual effects more efficiently
+       local function disableEffects()
+           for _, v in ipairs(game:GetDescendants()) do
+               local className = v.ClassName
+               if className == "ParticleEmitter" or className == "Trail" or className == "Smoke" or className == "Fire" or className == "Sparkles" then
+                   v.Enabled = false
+               end
+           end
+       end
+       
+       -- Optimize lighting settings
+       local function optimizeLighting()
+           local lighting = game:GetService("Lighting")
+           lighting.GlobalShadows = false
+           lighting.FogEnd = math.huge
+       end
+       
+       -- Reduce material and texture overhead in workspace
+       local function optimizeWorkspace()
+           for _, v in ipairs(workspace:GetDescendants()) do
+               if v:IsA("BasePart") then
+                   if not v.Parent:FindFirstChildOfClass("Humanoid") then
+                       v.Material = Enum.Material.SmoothPlastic
+                   end
+               elseif v:IsA("Texture") then
+                   v:Destroy()
+               end
+           end
+       end
+       
+       -- Set rendering quality
+       local function setQuality()
+           local success, err = pcall(function()
+               settings().Rendering.QualityLevel = 0
+           end)
+           if not success then
+               warn("Failed to set QualityLevel:", err)
+           end
+       end
+       
+       -- Run all optimizations
+       disableEffects()
+       optimizeLighting()
+       optimizeWorkspace()
+       setQuality()
+   end,
 })
