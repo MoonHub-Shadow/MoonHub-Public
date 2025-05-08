@@ -234,21 +234,36 @@ local autoSpeedToggle = TabSpeedandSize:CreateToggle({
 })
 
 -- ==========================
--- Auto Size Nan | Tiny Toggle
-local Toggle = TabSpeedandSize:CreateToggle({
-   Name = "Auto Size Nan | Tiny",
-   CurrentValue = false,
-   Flag = "Nan",
-   Callback = function(Value)
-      _G.AutoSize = Value
-      spawn(function()
-          while _G.AutoSize do
-              game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer(
-                  "changeSize",
-                  -9223372036854776000 -- Very small size
-              )
-              task.wait(0.1)
-          end
-      end)
-   end
+local Button = TabAntiShi:CreateButton({
+   Name = "Anti AFK",
+   Callback = function()
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/evxncodes/mainroblox/main/anti-afk", true))()
+   end,
+})
+
+local Button = TabAntiShi:CreateButton({
+Name = "Anti Lag", 
+Callback = function()
+   for _, v in pairs(game:GetDescendants()) do
+
+        if v:IsA("ParticleEmitter") or v:IsA("Effect") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Explosion") then
+
+            v:Destroy()
+
+        elseif v:IsA("Decal") or v:IsA("Texture") then
+
+            v:Destroy()
+
+        end
+
+    end
+
+end
+})
+
+
+local Button = TabAntiShi:CreateButton({
+Name = "MOHA Anti Afk | Anti Lag",
+Callback = function()
+   loadstring(game:HttpGet("https://raw.githubusercontent.com/LEGENDOX-BYMOHA/ML/refs/heads/main/anti%20lag%2Ckick%2Cafk%20.txt"))()
 })
