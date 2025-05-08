@@ -1,38 +1,33 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "MoonHub",
-   Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+   Icon = 0,
    LoadingTitle = "BASICALLY A FREE PAID",
    LoadingSubtitle = "By Godlike",
-   Theme = "Serenity", -- Check https://docs.sirius.menu/rayfield/configuration/themes
-
+   Theme = "Serenity",
    DisableRayfieldPrompts = false,
-   DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
-
+   DisableBuildWarnings = false,
    ConfigurationSaving = {
       Enabled = true,
-      FolderName = nil, -- Create a custom folder for your hub/game
+      FolderName = nil,
       FileName = "Big Hub"
    },
-
    Discord = {
-      Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
-      Invite = "0", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
-      RememberJoins = false -- Set this to false to make them join the discord every time they load it up
+      Enabled = false,
+      Invite = "0",
+      RememberJoins = false
    },
-
-   KeySystem = false, -- Set this to true to use our key system
+   KeySystem = false,
    KeySettings = {
       Title = "Untitled",
       Subtitle = "Key System",
-      Note = "No method of obtaining the key is provided", -- Use this to tell the user how to get a key
-      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
-      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
-      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
-      Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+      Note = "No method of obtaining the key is provided",
+      FileName = "Key",
+      SaveKey = true,
+      GrabKeyFromSite = false,
+      Key = {"Hello"}
    }
 })
-
 
 local TabMain = Window:CreateTab("Main", "rewind")
 local TabSpeedandSize = Window:CreateTab("Speed and Size", "rewind")
@@ -50,134 +45,175 @@ local TabLinkedScripts = Window:CreateTab("Linked Scripts", "rewind")
 local TabDiscord = Window:CreateTab("Cool Discord Servers", "rewind")
 local TabCredits = Window:CreateTab("Credits", "rewind")
 
-
-
-local Button = TabMain:CreateButton({ -- Changed Tab.Main to TabMain
-   Name = "Fast Tools",
-   Callback = function()
-      local Value = not _G.FastTools -- Define Value and toggle the state
-      _G.FastTools = Value
-      local defaultSpeeds = {
-         {
-            "Punch",
-            "attackTime",
-            Value and 0 or 0.35
-         },
-         {
-            "Ground Slam",
-            "attackTime",
-            Value and 0 or 6
-         },
-         {
-            "Stomp",
-            "attackTime",
-            Value and 0 or 7
-         },
-         {
-            "Handstands",
-            "repTime",
-            Value and 0 or 1
-         },
-         {
-            "Pushups",
-            "repTime",
-            Value and 0 or 1
-         },
-         {
-            "Weight",
-            "repTime",
-            Value and 0 or 1
-         },
-         {
-            "Situps",
-            "repTime",
-            Value and 0 or 1
-         }
-      }
-      local player = game.Players.LocalPlayer
-      local backpack = player:WaitForChild("Backpack")
-      for _, toolInfo in ipairs(defaultSpeeds) do
-         local tool = backpack:FindFirstChild(toolInfo[1])
-         if tool and tool:FindFirstChild(toolInfo[2]) then
-            tool[toolInfo[2]].Value = toolInfo[3]
-         end
-         local equippedTool = player.Character and player.Character:FindFirstChild(toolInfo[1])
-         if equippedTool and equippedTool:FindFirstChild(toolInfo[2]) then
-            equippedTool[toolInfo[2]].Value = toolInfo[3]
-         end
-      end
-   end
-})
-
-local Button = TabMain:CreateButton({ -- Changed Tab.Main to TabMain
-   Name = "Free AutoLift Pass",
-   Callback = function()
-      local gamepassFolder = game:GetService("ReplicatedStorage").gamepassIds
-      local player = game:GetService("Players").LocalPlayer
-      for _, gamepass in pairs(gamepassFolder:GetChildren()) do
-         local value = Instance.new("IntValue")
-         value.Name = gamepass.Name
-         value.Value = gamepass.Value
-         value.Parent = player.ownedGamepasses
-      end
-   end
-}) -- Removed the extra 'end,' and ')'
-
-local Toggle = TabMain:CreateToggle({ -- Changed Tab.Main to TabMain
-   Name = "Walk On Water",
-   CurrentValue = false,
-   Flag = "WalkOnWater", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-      if Value then
-         -- Assuming createParts and makePartsWalkthrough are defined elsewhere
-         -- You need to define these functions or replace them with the actual logic
-         -- For example:
-         -- local function createParts() print("Creating parts for walking on water") end
-         -- local function makePartsWalkthrough() print("Making parts walkthrough") end
-         -- createParts() -- This line seems out of place inside the 'if Value then' block based on the original structure.
-         -- It should likely be part of the 'if Value then' or 'else' block depending on what it does.
-         -- Assuming createParts makes the parts that you walk on when the toggle is ON
-         -- and makePartsWalkthrough makes them not solid when the toggle is OFF.
-         -- You need to implement the actual logic for these functions.
-         print("Walk On Water Enabled") -- Placeholder
-      else
-         -- Assuming makePartsWalkthrough is defined elsewhere
-         print("Walk On Water Disabled") -- Placeholder
-      end
-   end
-})
-
-local Toggle = TabMain:CreateToggle({ -- Changed Tab.Main to TabMain
-   Name = "Lock Position",
-   CurrentValue = false,
-   Flag = "LockPosition", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-      if Value then
-         local currentPos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
-         getgenv().posLock = game:GetService("RunService").Heartbeat:Connect(function()
-            if game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
-               game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = currentPos
+-- ==========================
+-- Fast Tools Button
+local fastToolsButton = TabMain:CreateButton({
+    Name = "Fast Tools",
+    Callback = function()
+        local Value = not _G.FastTools
+        _G.FastTools = Value
+        local defaultSpeeds = {
+            {"Punch", "attackTime", Value and 0 or 0.35},
+            {"Ground Slam", "attackTime", Value and 0 or 6},
+            {"Stomp", "attackTime", Value and 0 or 7},
+            {"Handstands", "repTime", Value and 0 or 1},
+            {"Pushups", "repTime", Value and 0 or 1},
+            {"Weight", "repTime", Value and 0 or 1},
+            {"Situps", "repTime", Value and 0 or 1}
+        }
+        local player = game.Players.LocalPlayer
+        local backpack = player:WaitForChild("Backpack")
+        for _, toolInfo in ipairs(defaultSpeeds) do
+            local tool = backpack:FindFirstChild(toolInfo[1])
+            if tool and tool:FindFirstChild(toolInfo[2]) then
+                tool[toolInfo[2]].Value = toolInfo[3]
             end
-         end)
-      else
-         if getgenv().posLock then
-            getgenv().posLock:Disconnect()
-         end
-      end
-   end
+            local equippedTool = player.Character and player.Character:FindFirstChild(toolInfo[1])
+            if equippedTool and equippedTool:FindFirstChild(toolInfo[2]) then
+                equippedTool[toolInfo[2]].Value = toolInfo[3]
+            end
+        end
+    end
 })
 
-local Toggle = TabMain:CreateToggle({ -- Changed Tab.Main to TabMain
-   Name = "Day Changer",
-   CurrentValue = false,
-   Flag = "DayChanger", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
-   Callback = function(Value)
-      if Value then
-         -- If the toggle is turned on, set the time to midnight
-         game.Lighting.TimeOfDay = "00:00:00" -- Midnight
-      else
-         -- If the toggle is turned off, set the time to daytime (e.g., 12:00:00)
-         game.Lighting.TimeOfDay = "12:00:00" -- Noon or any desired daytime value
-      end
-   end
+-- ==========================
+-- Free AutoLift Pass Button
+local autoLiftButton = TabMain:CreateButton({
+    Name = "Free AutoLift Pass",
+    Callback = function()
+        local gamepassFolder = game:GetService("ReplicatedStorage").gamepassIds
+        local player = game:GetService("Players").LocalPlayer
+        for _, gamepass in pairs(gamepassFolder:GetChildren()) do
+            local value = Instance.new("IntValue")
+            value.Name = gamepass.Name
+            value.Value = gamepass.Value
+            value.Parent = player:FindFirstChild("ownedGamepasses") or player:WaitForChild("PlayerGui") -- ensure parent exists
+        end
+    end
+})
+
+-- ==========================
+-- Walk On Water Toggle
+local walkOnWaterToggle = TabMain:CreateToggle({
+    Name = "Walk On Water",
+    CurrentValue = false,
+    Flag = "WalkOnWater",
+    Callback = function(Value)
+        if Value then
+            -- Placeholder for createParts and makePartsWalkthrough functions
+            print("Walk On Water Enabled")
+            -- You should define createParts() and makePartsWalkthrough() elsewhere
+            -- createParts()
+            -- makePartsWalkthrough()
+        else
+            print("Walk On Water Disabled")
+            -- Implement logic to revert changes if needed
+        end
+    end
+})
+
+-- ==========================
+-- Lock Position Toggle
+local lockPositionToggle = TabMain:CreateToggle({
+    Name = "Lock Position",
+    CurrentValue = false,
+    Flag = "LockPosition",
+    Callback = function(Value)
+        if Value then
+            local currentPos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame
+            getgenv().posLock = game:GetService("RunService").Heartbeat:Connect(function()
+                if game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = currentPos
+                end
+            end)
+        else
+            if getgenv().posLock then
+                getgenv().posLock:Disconnect()
+            end
+        end
+    end
+})
+
+-- ==========================
+-- Day Changer Toggle
+local dayChangerToggle = TabMain:CreateToggle({
+    Name = "Day Changer",
+    CurrentValue = false,
+    Flag = "DayChanger",
+    Callback = function(Value)
+        if Value then
+            game.Lighting.TimeOfDay = "00:00:00" -- Midnight
+        else
+            game.Lighting.TimeOfDay = "12:00:00" -- Daytime
+        end
+    end
+})
+
+-- ==========================
+-- Size Changer Input
+local selectedSize = "2" -- default value
+local sizeInput = TabSpeedandSize:CreateInput({
+    Name = "Size Changer",
+    CurrentValue = "2",
+    PlaceholderText = "2",
+    RemoveTextAfterFocusLost = false,
+    Flag = "SizeChanger",
+    Callback = function(Numeric)
+        selectedSize = Numeric
+        if _G.AutoSize then
+            game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
+        end
+    end
+})
+
+-- Auto Set Size Toggle
+local autoSizeToggle = TabSpeedandSize:CreateToggle({
+    Name = "Auto Set Size",
+    CurrentValue = false,
+    Flag = "AutoChangeSize",
+    Callback = function(Value)
+        _G.AutoSize = Value
+        while _G.AutoSize do
+            game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer("changeSize", tonumber(selectedSize))
+            task.wait(0.1)
+            if not _G.AutoSize then break end
+        end
+    end
+})
+
+-- Speed Changer Input
+local selectedSpeed = "143"
+local speedInput = TabSpeedandSize:CreateInput({
+    Name = "Speed Changer",
+    CurrentValue = "143",
+    PlaceholderText = "143",
+    RemoveTextAfterFocusLost = false,
+    Flag = "SpeedChanger",
+    Callback = function(Numeric)
+        selectedSpeed = Numeric
+        if _G.AutoSpeed then
+            local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = tonumber(selectedSpeed)
+            end
+        end
+    end
+})
+
+-- Auto Set Speed Toggle
+local autoSpeedToggle = TabSpeedandSize:CreateToggle({
+    Name = "Auto Set Speed",
+    CurrentValue = false,
+    Flag = "AutoSetSpeed",
+    Callback = function(Value)
+        _G.AutoSpeed = Value
+        while _G.AutoSpeed do
+            local humanoid = game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("Humanoid")
+            if humanoid then
+                humanoid.WalkSpeed = tonumber(selectedSpeed)
+            end
+            task.wait()
+            if not _G.AutoSpeed then break end
+        end
+    end
 })
