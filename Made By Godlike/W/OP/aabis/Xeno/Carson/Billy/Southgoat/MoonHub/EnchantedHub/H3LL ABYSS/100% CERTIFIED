@@ -2,7 +2,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
    Name = "MoonHub",
    Icon = 0,
-   LoadingTitle = "BASICALLY A FREE PAID",
+   LoadingTitle = "Best Current Script",
    LoadingSubtitle = "By Godlike",
    Theme = "Serenity",
    DisableRayfieldPrompts = false,
@@ -217,3 +217,21 @@ local autoSpeedToggle = TabSpeedandSize:CreateToggle({
         end
     end
 })
+
+local Toggle = Tab.SpeedAndSize:CreateToggle({
+   Name = "Auto Size Nan | Tiny",
+   CurrentValue = false,
+   Flag = "Nan", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+   Callback = function(Value)
+      -- Set the toggle variable to control the loop
+_G.AutoSize = Value  -- Make sure 'Value' is defined elsewhere in your script
+
+if _G.AutoSize then
+    while _G.AutoSize do
+        game:GetService("ReplicatedStorage").rEvents.changeSpeedSizeRemote:InvokeServer(
+            "changeSize",
+            -9223372036854776000
+        )
+        task.wait(0.1)
+    end
+end
