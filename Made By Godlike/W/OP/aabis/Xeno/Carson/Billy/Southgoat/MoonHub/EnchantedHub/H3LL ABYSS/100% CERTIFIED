@@ -138,6 +138,7 @@ local lockPositionToggle = TabMain:CreateToggle({
         else
             if getgenv().posLock then
                 getgenv().posLock:Disconnect()
+                getgenv().posLock = nil
             end
         end
     end
@@ -234,6 +235,7 @@ local autoSpeedToggle = TabSpeedandSize:CreateToggle({
 })
 
 -- ==========================
+-- Anti AFK Button
 local ButtonAFK = TabAntiShi:CreateButton({
    Name = "Anti AFK",
    Callback = function()
@@ -241,6 +243,7 @@ local ButtonAFK = TabAntiShi:CreateButton({
    end,
 })
 
+-- Anti Lag Button
 local ButtonLag = TabAntiShi:CreateButton({
    Name = "Anti Lag", 
    Callback = function()
@@ -254,6 +257,7 @@ local ButtonLag = TabAntiShi:CreateButton({
    end,
 })
 
+-- MOHA Anti AFK | Anti Lag
 local ButtonMOHA = TabAntiShi:CreateButton({
    Name = "MOHA Anti AFK | Anti Lag",
    Callback = function()
@@ -261,6 +265,7 @@ local ButtonMOHA = TabAntiShi:CreateButton({
    end,
 })
 
+-- Ultra Lag Button
 local ButtonUltraLag = TabAntiShi:CreateButton({
    Name = "MOHAS ANTI AFK | No Disable effects",
    Callback = function()
@@ -315,121 +320,95 @@ local ButtonUltraLag = TabAntiShi:CreateButton({
    end,
 })
 
-
-local Button = TabAntiShi:CreateButton({
-Name = "FPS Boost",
-Callback = function()
-   -- If the toggle is turned on, start the cleanup loop
-
-            RemoveLag() -- Initial cleanup
-
-            cleanupLoop = task.spawn(function()
-
-                while Value do -- Check if the toggle is still active using the Value parameter
-
-                    wait(30) -- Wait for 30 seconds
-
-                    RemoveLag() -- Clean up again
-
-                end
-
-            end)
-
-        else
-
-            -- If the toggle is turned off, stop the cleanup loop
-
-            if cleanupLoop then
-
-                task.cancel(cleanupLoop) -- Stop the loop
-
-                cleanupLoop = nil
-
-            end
-
+-- RemoveLag function placeholder (define as needed)
+local function RemoveLag()
+    -- Example: destroy particles, effects, etc.
+    for _, v in pairs(game:GetDescendants()) do
+        if v:IsA("ParticleEmitter") or v:IsA("Effect") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Explosion") then
+            v:Destroy()
+        elseif v:IsA("Decal") or v:IsA("Texture") then
+            v:Destroy()
         end
-
     end
-
-})
-
-
-
-Local UltraCombineToggle = TabAntiShi:CreateToggle({
-Name = "ULTRA Combination | EVERY OPTION IN ANTI SHI AT ONCE",
-CurrentValue = false
-Flag = "ultracombine",
-Callback = Function(Value)
-if	Value then
-for _, v in pairs(game:GetDescendants()) do
-
-			if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
-
-				v.Enabled = false
-
-			end
-
-		end
-
-		local lighting = game:GetService("Lighting")
-
-		lighting.GlobalShadows = false
-
-		lighting.FogEnd = 9e9
-
-		for _, v in pairs(workspace:GetDescendants()) do
-
-			if v:IsA("BasePart") and not v.Parent:FindFirstChild("Humanoid") then
-
-				v.Material = Enum.Material.SmoothPlastic
-
-				if v:IsA("Texture") then
-
-					v:Destroy()
-
-				end
-
-			end
-
-		end
-
-		settings().Rendering.QualityLevel = 0
-
-	end
-
--- If the toggle is turned on, start the cleanup loop
-
-            RemoveLag() -- Initial cleanup
-
-            cleanupLoop = task.spawn(function()
-
-                while Value do -- Check if the toggle is still active using the Value parameter
-
-                    wait(30) -- Wait for 30 seconds
-
-                    RemoveLag() -- Clean up again
-
-                end
-
-            end)
-
-        else
-
-            -- If the toggle is turned off, stop the cleanup loop
-
-            if cleanupLoop then
-
-                task.cancel(cleanupLoop) -- Stop the loop
-
-                cleanupLoop = nil
-
-            end
-
-        end
-
-    end
-
-
-loadstring(game:HttpGet("https://raw.githubusercontent.com/LEGENDOX-BYMOHA/ML/refs/heads/main/anti%20lag%2Ckick%2Cafk%20.txt"))()
 end
+
+-- FPS Boost Button (assuming you want to run RemoveLag repeatedly)
+local cleanupLoop
+local Value = false -- toggle value for the button
+
+local ButtonFPSBoost = TabAntiShi:CreateButton({
+    Name = "FPS Boost",
+    Callback = function()
+        if not Value then
+            -- Turn on
+            Value = true
+            RemoveLag()
+            cleanupLoop = task.spawn(function()
+                while Value do
+                    wait(30)
+                    RemoveLag()
+                end
+            end)
+        else
+            -- Turn off
+            Value = false
+            if cleanupLoop then
+                task.cancel(cleanupLoop)
+                cleanupLoop = nil
+            end
+        end
+    end,
 })
+
+-- ==========================
+-- ULTRA Combination | EVERY OPTION IN ANTI SHI AT ONCE
+local UltraCombineToggle = TabAntiShi:CreateToggle({
+    Name = "ULTRA Combination | EVERY OPTION IN ANTI SHI AT ONCE",
+    CurrentValue = false,
+    Flag = "ultracombine",
+    Callback = function(Value)
+        if Value then
+            -- Disable effects
+            for _, v in pairs(game:GetDescendants()) do
+                if v:IsA("ParticleEmitter") or v:IsA("Trail") or v:IsA("Smoke") or v:IsA("Fire") or v:IsA("Sparkles") then
+                    v.Enabled = false
+                end
+            end
+            -- Lighting
+            local lighting = game:GetService("Lighting")
+            lighting.GlobalShadows = false
+            lighting.FogEnd = 9e9
+            -- Workspace parts
+            for _, v in pairs(workspace:GetDescendants()) do
+                if v:IsA("BasePart") and not v.Parent:FindFirstChild("Humanoid") then
+                    v.Material = Enum.Material.SmoothPlastic
+                end
+                if v:IsA("Texture") then
+                    v:Destroy()
+                end
+            end
+            -- Set quality
+            pcall(function()
+                settings().Rendering.QualityLevel = 0
+            end)
+        end
+
+        -- Start cleanup loop
+        if not getgenv().cleanupUltra then
+            getgenv().cleanupUltra = true
+            spawn(function()
+                while getgenv().cleanupUltra do
+                    wait(30)
+                    RemoveLag()
+                end
+            end)
+        end
+    end
+})
+
+-- Button to stop the Ultra Combine (if needed)
+-- You can add a toggle to disable it
+
+-- ==========================
+-- Load external scripts as needed
+loadstring(game:HttpGet("https://raw.githubusercontent.com/LEGENDOX-BYMOHA/ML/refs/heads/main/anti%20lag%2Ckick%2Cafk%20.txt"))()
