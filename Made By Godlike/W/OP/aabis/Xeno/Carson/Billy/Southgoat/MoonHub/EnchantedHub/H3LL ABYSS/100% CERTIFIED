@@ -429,44 +429,145 @@ local GreenBarsToggle = TabBoosters:CreateToggle({
     CurrentValue = false,
     Flag = "GreenBar",
     Callback = function(Value)
-        _G.GreenBarsActive = Value
-        spawn(function()
-            while _G.GreenBarsActive do
-                -- Placeholder functions, replace with actual game API
-                -- Example:
-                -- local inventory = game:GetPlayerInventory()
-                -- for i, item in ipairs(inventory) do
-                --     if item.name == "Green Bar" then
-                --         game:ConsumeItem(item)
-                --     end
-                -- end
-
-                -- Since actual functions are game-specific, here's a pseudocode placeholder:
-                -- Replace with actual implementation
-                -- For example:
-                -- for _, item in pairs(game:GetService("ReplicatedStorage").Inventory:GetChildren()) do
-                --     if item.Name == "Green Bar" then
-                --         game:GetService("ReplicatedStorage").Events.ConsumeItem:FireServer(item)
-                --     end
-                -- end
-
-                -- For demonstration, just wait
-                wait(1)
-            end
-        end)
+     local function consumeItemByName(itemName)
+    local playerInventory = game.GetPlayerInventory()
+    for i = 1, #playerInventory do
+        local item = playerInventory[i]
+        if item.name == itemName then
+            game.ConsumeItem(item)
+        end
     end
+end
+
+local function main()
+    consumeItemByName("Energy Bar")
+end
+
+main()
+
+
+
+local ProteinBarToggle = TabBoosters:CreateToggle({
+Name = "Auto Eat Protein Bars",
+CurrentValue = false
+Flag = "ProteinBar",
+Callback = function(Value)
+local function consumeAllProteinBars()
+    local player = game.GetLocalPlayer()
+    local inventory = player:GetInventory()
+    for i = 1, #inventory do
+        local item = inventory[i]
+        if item.name == "Protein Bar" then
+            player:ConsumeItem(item)
+        end
+    end
+end
+consumeAllProteinBars()
+
+local TOUGHBarToggle = TabBoosters:CreateToggle({
+Name = "Auto Eat Tough Bars",
+CurrentValue = false
+Flag = "ToughBar",
+Callback = function(Value)
+local function consumeAllToughBars()
+    local player = game.GetLocalPlayer()
+    local inventory = player:GetInventory()
+    for i = 1, #inventory do
+        local item = inventory[i]
+        if item.name == "TOUGH Bar" then
+            player:ConsumeItem(item)
+        end
+    end
+end
+consumeAllToughBars()
+
+
+local ProteinShakeToggle = TabBoosters:CreateToggle({
+Name = "Protein Shake",
+CurrentValue = false
+Flag = "ProteinShake",
+Callback = function(Value)
+local function consumeAllProteinShakes()
+    local player = game.GetLocalPlayer()
+    local inventory = player:GetInventory()
+    for i = 1, #inventory do
+        local item = inventory[i]
+        if item.name == "Protein Shake" then
+            player:ConsumeItem(item)
+        end
+    end
+end
+consumeAllProteinShakes()
+
+
+local ULTRAShakeToggle = TabBoosters:CreateToggle({
+Name = "ULTRA Shake",
+CurrentValue = false
+Flag = "UltraShake",
+Callback = function(Value)
+local function consumeAllUltraShakes()
+    local player = game.GetLocalPlayer()
+    local inventory = player:GetInventory()
+    for i = 1, #inventory do
+        local item = inventory[i]
+        if item.name == "ULTRA Shake" then
+            player:ConsumeItem(item)
+        end
+    end
+end
+consumeAllUltraShakes()
+
+-----|boosters Finished👑|------
+
+
+local AutoWeightToggle = TabAutoWeight:CreateToggle({
+Name = "Auto Weight",
+CurrentValue = false
+Flag = "AutoWeight",
+Callback = function(Value)
+_G.AutoWeight = Value
+
+		if Value then
+
+			local weightTool = game.Players.LocalPlayer.Backpack:FindFirstChild("Weight")
+
+			if weightTool then
+
+				game.Players.LocalPlayer.Character.Humanoid:EquipTool(weightTool)
+
+			end
+
+		else
+
+			local character = game.Players.LocalPlayer.Character
+
+			local equipped = character:FindFirstChild("Weight")
+
+			if equipped then
+
+				equipped.Parent = game.Players.LocalPlayer.Backpack
+
+			end
+
+		end
+
+		while _G.AutoWeight do
+
+			game:GetService("Players").LocalPlayer.muscleEvent:FireServer("rep")
+
+			task.wait(0)
+
+		end
+
+	end
+
 })
 
--- Note: The above toggle's callback should contain your game's actual API calls to find and consume "Green Bar" items.
--- Replace the placeholder with actual code.
 
--- If you want to automatically call the function periodically:
--- You can also set up a timer or run it inside the spawn thread
+local AutoPushupsToggle = TabAutoWeight:CreateToggle({
+Name = "Auto Pushups",
+CurrentValue = false
+Flag = "AutoPushups",
+Callback = function(Value)
 
--- Example of periodic auto-eating:
--- spawn(function()
---     while _G.GreenBarsActive do
---         -- your code to find and consume "Green Bar"
---         wait(1)
---     end
--- end)
+
