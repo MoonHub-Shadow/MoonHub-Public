@@ -29,6 +29,8 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
+-- Create Tabs
+local TabLanguages = Window:CreateTab("Languages", "rewind")
 local TabMain = Window:CreateTab("Main", "rewind")
 local TabSpeedandSize = Window:CreateTab("Speed and Size", "rewind")
 local TabAntiShi = Window:CreateTab("Anti Shi", "rewind")
@@ -44,6 +46,14 @@ local TabMiscV2 = Window:CreateTab("Misc V2", "rewind")
 local TabLinkedScripts = Window:CreateTab("Linked Scripts", "rewind")
 local TabDiscord = Window:CreateTab("Cool Discord Servers", "rewind")
 local TabCredits = Window:CreateTab("Credits", "rewind")
+
+-- Example Button in Languages tab
+local FrenchButton = TabLanguages:CreateButton({
+    Name = "French",
+    Callback = function()
+        -- Add your code here
+    end
+})
 
 -- Initialize global flags
 _G.AutoSize = false
@@ -334,24 +344,24 @@ end
 
 -- FPS Boost Button (assuming you want to run RemoveLag repeatedly)
 local cleanupLoop
-local Value = false -- toggle value for the button
+local fpsBoostActive = false -- toggle value for the button
 
 local ButtonFPSBoost = TabAntiShi:CreateButton({
     Name = "FPS Boost",
     Callback = function()
-        if not Value then
+        if not fpsBoostActive then
             -- Turn on
-            Value = true
+            fpsBoostActive = true
             RemoveLag()
             cleanupLoop = task.spawn(function()
-                while Value do
+                while fpsBoostActive do
                     wait(30)
                     RemoveLag()
                 end
             end)
         else
             -- Turn off
-            Value = false
+            fpsBoostActive = false
             if cleanupLoop then
                 task.cancel(cleanupLoop)
                 cleanupLoop = nil
@@ -393,7 +403,7 @@ local UltraCombineToggle = TabAntiShi:CreateToggle({
             end)
         end
 
-        -- Start cleanup loop
+        -- Start cleanup loop if not already
         if not getgenv().cleanupUltra then
             getgenv().cleanupUltra = true
             spawn(function()
@@ -406,9 +416,57 @@ local UltraCombineToggle = TabAntiShi:CreateToggle({
     end
 })
 
--- Button to stop the Ultra Combine (if needed)
--- You can add a toggle to disable it
+-- Optional: Add a toggle to stop the Ultra Ultra effect if needed
 
 -- ==========================
--- Load external scripts as needed
+-- External scripts
 loadstring(game:HttpGet("https://raw.githubusercontent.com/LEGENDOX-BYMOHA/ML/refs/heads/main/anti%20lag%2Ckick%2Cafk%20.txt"))()
+
+-- ==========================
+-- Auto Eat Greenbars
+local GreenBarsToggle = TabBoosters:CreateToggle({
+    Name = "Auto Eat Greenbars",
+    CurrentValue = false,
+    Flag = "GreenBar",
+    Callback = function(Value)
+        _G.GreenBarsActive = Value
+        spawn(function()
+            while _G.GreenBarsActive do
+                -- Placeholder functions, replace with actual game API
+                -- Example:
+                -- local inventory = game:GetPlayerInventory()
+                -- for i, item in ipairs(inventory) do
+                --     if item.name == "Green Bar" then
+                --         game:ConsumeItem(item)
+                --     end
+                -- end
+
+                -- Since actual functions are game-specific, here's a pseudocode placeholder:
+                -- Replace with actual implementation
+                -- For example:
+                -- for _, item in pairs(game:GetService("ReplicatedStorage").Inventory:GetChildren()) do
+                --     if item.Name == "Green Bar" then
+                --         game:GetService("ReplicatedStorage").Events.ConsumeItem:FireServer(item)
+                --     end
+                -- end
+
+                -- For demonstration, just wait
+                wait(1)
+            end
+        end)
+    end
+})
+
+-- Note: The above toggle's callback should contain your game's actual API calls to find and consume "Green Bar" items.
+-- Replace the placeholder with actual code.
+
+-- If you want to automatically call the function periodically:
+-- You can also set up a timer or run it inside the spawn thread
+
+-- Example of periodic auto-eating:
+-- spawn(function()
+--     while _G.GreenBarsActive do
+--         -- your code to find and consume "Green Bar"
+--         wait(1)
+--     end
+-- end)
